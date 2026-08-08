@@ -18,6 +18,9 @@ export type LoginState = { error: string | null };
 
 const REJECTION_MESSAGE = "Incorrect username or password.";
 
+const DUMMY_PASSWORD_HASH =
+  "$argon2id$v=19$m=19456,t=2,p=1$HaOePefvO66JFinu5DJ55w$tpNRf07xRIhYipgRiqAMdRt/ZO96RiwZ2pR40W7eCNY";
+
 export async function logIn(
   _previous: LoginState,
   formData: FormData,
@@ -38,6 +41,8 @@ export async function logIn(
     .limit(1);
 
   if (!user) {
+    await verify(DUMMY_PASSWORD_HASH, credentials.data.password);
+
     return { error: REJECTION_MESSAGE };
   }
 

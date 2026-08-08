@@ -22,6 +22,8 @@ export type NewUserState = {
   generatedPassword: string | null;
 };
 
+export type DeleteUserState = { error: string | null };
+
 function generatePassword(): string {
   const bytes = crypto.getRandomValues(
     new Uint8Array(GENERATED_PASSWORD_BYTES),
@@ -82,13 +84,20 @@ export async function createUser(
   };
 }
 
-export async function deleteUser(formData: FormData): Promise<void> {
+export async function deleteUser(
+  _previous: DeleteUserState,
+  formData: FormData,
+): Promise<DeleteUserState> {
   const session = await requireAdmin();
 
   const userId = z.uuid().safeParse(formData.get("userId"));
 
-  if (!userId.success || userId.data === session.userId) {
-    return;
+  if (!userId.success) {
+    return { error: "Unknown user." };
+  }
+
+  if (userId.data === session.userId) {
+    return { error: "You cannot remove your own account." };
   }
 
   const admins = await db
@@ -100,10 +109,12 @@ export async function deleteUser(formData: FormData): Promise<void> {
     admins.length <= 1 && admins.some((admin) => admin.id === userId.data);
 
   if (isLastAdmin) {
-    return;
+    return { error: "At least one admin must remain." };
   }
 
   await db.delete(users).where(eq(users.id, userId.data));
 
   revalidatePath("/admin/users");
+
+  return { error: null };
 }

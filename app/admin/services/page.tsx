@@ -5,7 +5,7 @@ import { services } from "@/db/schema";
 import { formatDuration, formatPrice } from "@/lib/format";
 import { requireAdmin } from "@/lib/session";
 
-import { deleteService } from "./actions";
+import { DeleteServiceForm } from "./delete-service-form";
 import { ServiceForm } from "./service-form";
 
 export default async function ServicesPage() {
@@ -52,12 +52,7 @@ export default async function ServicesPage() {
 
             <ServiceForm service={service} />
 
-            <form action={deleteService} className="mt-3">
-              <input type="hidden" name="serviceId" value={service.id} />
-              <button type="submit" className="text-sm text-red-700 underline">
-                Delete service
-              </button>
-            </form>
+            <DeleteServiceForm serviceId={service.id} />
           </article>
         ))}
       </section>

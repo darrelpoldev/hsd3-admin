@@ -37,6 +37,8 @@ const manualBookingSchema = z.object({
 
 export type ManualBookingState = { error: string | null; saved: boolean };
 
+export type MoveBookingState = { error: string | null };
+
 export async function setBookingStatus(formData: FormData): Promise<void> {
   await requireSession();
 
@@ -54,7 +56,10 @@ export async function setBookingStatus(formData: FormData): Promise<void> {
   revalidatePath("/admin");
 }
 
-export async function moveBooking(formData: FormData): Promise<void> {
+export async function moveBooking(
+  _previous: MoveBookingState,
+  formData: FormData,
+): Promise<MoveBookingState> {
   await requireSession();
 
   const parsed = rescheduleSchema.safeParse({
@@ -64,12 +69,18 @@ export async function moveBooking(formData: FormData): Promise<void> {
   });
 
   if (!parsed.success) {
-    return;
+    return { error: "Pick a valid day and start time." };
   }
 
-  await rescheduleBooking(parsed.data);
+  const result = await rescheduleBooking({ ...parsed.data, now: new Date() });
+
+  if (!result.ok) {
+    return { error: `Could not move the booking: ${result.reason}.` };
+  }
 
   revalidatePath("/admin");
+
+  return { error: null };
 }
 
 export async function createManualBooking(

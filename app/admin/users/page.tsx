@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { requireAdmin } from "@/lib/session";
 
-import { deleteUser } from "./actions";
+import { DeleteUserForm } from "./delete-user-form";
 import { NewUserForm } from "./new-user-form";
 
 export default async function UsersPage() {
@@ -43,15 +43,7 @@ export default async function UsersPage() {
             {user.id === session.userId ? (
               <span className="text-sm text-slate-500">You</span>
             ) : (
-              <form action={deleteUser}>
-                <input type="hidden" name="userId" value={user.id} />
-                <button
-                  type="submit"
-                  className="text-sm text-red-700 underline"
-                >
-                  Remove
-                </button>
-              </form>
+              <DeleteUserForm userId={user.id} />
             )}
           </article>
         ))}

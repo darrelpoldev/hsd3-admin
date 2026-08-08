@@ -84,16 +84,21 @@ export async function updateService(
   return { error: null };
 }
 
-export async function deleteService(formData: FormData): Promise<void> {
+export async function deleteService(
+  _previous: ServiceFormState,
+  formData: FormData,
+): Promise<ServiceFormState> {
   await requireAdmin();
 
   const serviceId = z.uuid().safeParse(formData.get("serviceId"));
 
   if (!serviceId.success) {
-    return;
+    return { error: "Unknown service." };
   }
 
   await db.delete(services).where(eq(services.id, serviceId.data));
 
   revalidatePath("/admin/services");
+
+  return { error: null };
 }

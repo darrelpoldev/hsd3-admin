@@ -132,13 +132,14 @@ export async function listAvailability({
   serviceIds: string[];
   now: Date;
 }): Promise<Date[]> {
-  const [hours, selected, bookingSettings] = await Promise.all([
+  const [hours, selected, bookingSettings, blocking] = await Promise.all([
     loadOpeningHours(day),
     loadSelectedServices(serviceIds),
     loadSettings(),
+    loadBlockingWindows(day),
   ]);
 
-  if (!hours || selected.length === 0) {
+  if (!hours || selected.length !== new Set(serviceIds).size) {
     return [];
   }
 
@@ -157,7 +158,7 @@ export async function listAvailability({
     day,
     openingHours: hours,
     totalDurationHours,
-    blocking: await loadBlockingWindows(day),
+    blocking,
     notBefore: limits.notBefore,
     notAfter: limits.notAfter,
   });
@@ -173,7 +174,7 @@ export async function submitBooking(
     loadSettings(),
   ]);
 
-  if (selected.length === 0) {
+  if (selected.length !== new Set(request.serviceIds).size) {
     return { ok: false, reason: "no-services" };
   }
 
@@ -326,10 +327,20 @@ export async function changeBookingStatus(
   }
 
   try {
-    await db
+    const updated = await db
       .update(bookings)
       .set({ status: nextStatus, updatedAt: new Date() })
-      .where(eq(bookings.id, bookingId));
+      .where(
+        and(
+          eq(bookings.id, bookingId),
+          eq(bookings.status, booking.status),
+        ),
+      )
+      .returning({ id: bookings.id });
+
+    if (updated.length === 0) {
+      return { ok: false };
+    }
   } catch (error) {
     if (isExclusionViolation(error)) {
       return { ok: false };
@@ -345,10 +356,12 @@ export async function rescheduleBooking({
   bookingId,
   day,
   startHour,
+  now,
 }: {
   bookingId: string;
   day: string;
   startHour: number;
+  now: Date;
 }): Promise<{ ok: boolean; reason?: "unknown" | "closed" | "outside-window" | "taken" }> {
   const [booking] = await db
     .select({ id: bookings.id })
@@ -387,6 +400,10 @@ export async function rescheduleBooking({
   }
 
   const startsAt = toShopInstant(day, startHour);
+
+  if (startsAt < now) {
+    return { ok: false, reason: "outside-window" };
+  }
 
   try {
     await db

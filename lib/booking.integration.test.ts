@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { afterAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 config({ path: ".env.local" });
 
@@ -7,13 +7,21 @@ const { db } = await import("@/db");
 const { bookingServices, bookings, customers, services } = await import(
   "@/db/schema"
 );
-const { listAvailability, submitBooking, changeBookingStatus } = await import(
-  "@/lib/booking"
-);
+const {
+  listAvailability,
+  submitBooking,
+  changeBookingStatus,
+  rescheduleBooking,
+} = await import("@/lib/booking");
 const { eq, inArray } = await import("drizzle-orm");
 
 const TEST_PHONE = "+1204555TESTONLY";
 const BOOKING_DAY = "2026-08-12";
+const RESCHEDULE_DAY = "2026-08-13";
+const MOVED_DAY = "2026-08-14";
+const CLOSED_DAY = "2026-08-16";
+const PAST_DAY = "2026-08-05";
+const MISSING_ID = "00000000-0000-4000-8000-000000000000";
 const NOW = new Date("2026-08-08T12:00:00Z");
 
 const [service] = await db
@@ -127,5 +135,114 @@ describe("booking flow against the real database", () => {
     );
 
     expect(result).toEqual({ ok: false, reason: "outside-window" });
+  });
+
+  it("refuses the whole booking when one of the chosen services is gone", async () => {
+    const result = await submitBooking(
+      {
+        day: BOOKING_DAY,
+        startHour: 13,
+        serviceIds: [service.id, MISSING_ID],
+        customer: customerDetails,
+      },
+      NOW,
+    );
+
+    expect(result).toEqual({ ok: false, reason: "no-services" });
+  });
+});
+
+describe("rescheduling a booking against the real database", () => {
+  let bookingId = "";
+
+  beforeAll(async () => {
+    const moving = await submitBooking(
+      {
+        day: RESCHEDULE_DAY,
+        startHour: 9,
+        serviceIds: [service.id],
+        customer: customerDetails,
+      },
+      NOW,
+    );
+
+    const blocker = await submitBooking(
+      {
+        day: MOVED_DAY,
+        startHour: 9,
+        serviceIds: [service.id],
+        customer: customerDetails,
+      },
+      NOW,
+    );
+
+    if (!moving.ok || !blocker.ok) {
+      throw new Error("Could not set up the reschedule fixtures.");
+    }
+
+    bookingId = moving.bookingId;
+  });
+
+  it("moves a booking to a free slot on another open day", async () => {
+    const result = await rescheduleBooking({
+      bookingId,
+      day: MOVED_DAY,
+      startHour: 13,
+      now: NOW,
+    });
+
+    expect(result).toEqual({ ok: true });
+
+    const [moved] = await db
+      .select({ startsAt: bookings.startsAt, status: bookings.status })
+      .from(bookings)
+      .where(eq(bookings.id, bookingId));
+
+    expect(moved.startsAt.toISOString()).toBe("2026-08-14T18:00:00.000Z");
+    expect(moved.status).toBe("pending");
+  });
+
+  it("refuses a move onto a day the shop is closed", async () => {
+    expect(
+      await rescheduleBooking({
+        bookingId,
+        day: CLOSED_DAY,
+        startHour: 10,
+        now: NOW,
+      }),
+    ).toEqual({ ok: false, reason: "closed" });
+  });
+
+  it("refuses a move that lands on top of another booking", async () => {
+    expect(
+      await rescheduleBooking({
+        bookingId,
+        day: MOVED_DAY,
+        startHour: 10,
+        now: NOW,
+      }),
+    ).toEqual({ ok: false, reason: "taken" });
+  });
+
+  it("refuses a move for a booking that does not exist", async () => {
+    expect(
+      await rescheduleBooking({
+        bookingId: MISSING_ID,
+        day: MOVED_DAY,
+        startHour: 13,
+        now: NOW,
+      }),
+    ).toEqual({ ok: false, reason: "unknown" });
+  });
+
+  it("refuses a move into a day that has already passed", async () => {
+    expect(
+      await rescheduleBooking({
+        bookingId,
+        day: PAST_DAY,
+        startHour: 10,
+        now: NOW,
+      }),
+    ).toEqual({ ok: false, reason: "outside-window" });
   });
 });
