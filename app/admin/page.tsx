@@ -121,7 +121,7 @@ export default async function SchedulePage({
             type="date"
             name="day"
             defaultValue={day}
-            className="flex-1 rounded-lg border border-line-strong px-3 py-3 text-base"
+            className="min-w-0 flex-1 rounded-lg border border-line-strong px-3 py-3 text-base"
           />
           <button
             type="submit"

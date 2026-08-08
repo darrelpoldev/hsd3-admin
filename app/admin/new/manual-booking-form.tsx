@@ -27,7 +27,7 @@ type Service = {
 };
 
 const fieldClassName =
-  "rounded-lg border border-line-strong px-3 py-3 text-base w-full";
+  "w-full min-w-0 rounded-lg border border-line-strong px-3 py-3 text-base";
 
 export function ManualBookingForm({ services }: { services: Service[] }) {
   const [state, formAction, isSubmitting] = useActionState(

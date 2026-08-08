@@ -65,7 +65,7 @@ export function HoursForm({ week }: { week: WeekDay[] }) {
                 type="time"
                 name={`opens-${day.weekday}`}
                 defaultValue={day.opensAt.slice(0, 5)}
-                className="rounded-lg border border-line-strong px-3 py-3 text-base"
+                className="w-full min-w-0 rounded-lg border border-line-strong px-3 py-3 text-base"
               />
             </label>
 
@@ -75,7 +75,7 @@ export function HoursForm({ week }: { week: WeekDay[] }) {
                 type="time"
                 name={`closes-${day.weekday}`}
                 defaultValue={day.closesAt.slice(0, 5)}
-                className="rounded-lg border border-line-strong px-3 py-3 text-base"
+                className="w-full min-w-0 rounded-lg border border-line-strong px-3 py-3 text-base"
               />
             </label>
           </div>

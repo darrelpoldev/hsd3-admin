@@ -105,6 +105,14 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .when-dark {
   display: none;
 }

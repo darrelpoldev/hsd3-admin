@@ -20,7 +20,7 @@ type Service = {
 };
 
 const fieldClassName =
-  "rounded-lg border border-line-strong px-3 py-3 text-base w-full";
+  "w-full min-w-0 rounded-lg border border-line-strong px-3 py-3 text-base";
 
 export function BookingForm({ services }: { services: Service[] }) {
   const [state, formAction, isSubmitting] = useActionState(
@@ -138,7 +138,13 @@ export function BookingForm({ services }: { services: Service[] }) {
 
         {isLoadingSlots ? <p className="text-sm text-muted">Checking…</p> : null}
 
-        {!isLoadingSlots && day && selectedServiceIds.length > 0 && slots.length === 0 ? (
+        {!availabilityKey ? (
+          <p className="text-sm text-muted">
+            Choose your services and a date to see what is open.
+          </p>
+        ) : null}
+
+        {!isLoadingSlots && availabilityKey && slots.length === 0 ? (
           <p className="text-sm text-muted">
             Nothing open that day. Try another date.
           </p>
