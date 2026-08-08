@@ -18,7 +18,7 @@ export default async function ManualBookingPage() {
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">Walk-in or phone booking</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           Lands as pending, exactly like a customer request.
         </p>
       </header>

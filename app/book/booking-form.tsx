@@ -20,7 +20,7 @@ type Service = {
 };
 
 const fieldClassName =
-  "rounded-lg border border-slate-300 px-3 py-3 text-base w-full";
+  "rounded-lg border border-line-strong px-3 py-3 text-base w-full";
 
 export function BookingForm({ services }: { services: Service[] }) {
   const [state, formAction, isSubmitting] = useActionState(
@@ -60,9 +60,9 @@ export function BookingForm({ services }: { services: Service[] }) {
 
   if (state.status === "booked") {
     return (
-      <div className="rounded-xl border border-green-200 bg-green-50 p-4">
-        <h2 className="text-base font-medium text-green-900">Request sent</h2>
-        <p className="mt-1 text-sm text-green-800">
+      <div className="rounded-xl border border-success-line bg-success-bg p-4">
+        <h2 className="text-base font-medium text-success-ink">Request sent</h2>
+        <p className="mt-1 text-sm text-success-ink">
           The shop will call you to confirm your appointment.
         </p>
       </div>
@@ -91,7 +91,7 @@ export function BookingForm({ services }: { services: Service[] }) {
         {services.map((service) => (
           <label
             key={service.id}
-            className="flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-3"
+            className="flex items-center gap-3 rounded-lg border border-line px-3 py-3"
           >
             <input
               type="checkbox"
@@ -108,14 +108,14 @@ export function BookingForm({ services }: { services: Service[] }) {
               className="size-5"
             />
             <span className="flex-1 text-base">{service.name}</span>
-            <span className="text-sm text-slate-600">
+            <span className="text-sm text-muted">
               {service.durationHours}h · ${service.price}
             </span>
           </label>
         ))}
 
         {totalHours > 0 ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             Total time in the shop: {totalHours}h
           </p>
         ) : null}
@@ -136,10 +136,10 @@ export function BookingForm({ services }: { services: Service[] }) {
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-base font-medium">3. Time</legend>
 
-        {isLoadingSlots ? <p className="text-sm text-slate-600">Checking…</p> : null}
+        {isLoadingSlots ? <p className="text-sm text-muted">Checking…</p> : null}
 
         {!isLoadingSlots && day && selectedServiceIds.length > 0 && slots.length === 0 ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             Nothing open that day. Try another date.
           </p>
         ) : null}
@@ -150,8 +150,8 @@ export function BookingForm({ services }: { services: Service[] }) {
               key={slot}
               className={`cursor-pointer rounded-lg border px-2 py-3 text-center text-sm ${
                 activeSlot === slot
-                  ? "border-slate-900 bg-slate-900 text-white"
-                  : "border-slate-300"
+                  ? "border-accent bg-accent text-accent-ink"
+                  : "border-line-strong"
               }`}
             >
               <input
@@ -198,7 +198,7 @@ export function BookingForm({ services }: { services: Service[] }) {
       </fieldset>
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -206,7 +206,7 @@ export function BookingForm({ services }: { services: Service[] }) {
       <button
         type="submit"
         disabled={isSubmitting || !activeSlot}
-        className="rounded-lg bg-slate-900 px-4 py-4 text-base font-medium text-white disabled:opacity-50"
+        className="rounded-lg bg-accent px-4 py-4 text-base font-medium text-accent-ink disabled:opacity-50"
       >
         {isSubmitting ? "Sending…" : "Request this appointment"}
       </button>

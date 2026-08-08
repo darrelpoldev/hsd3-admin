@@ -17,7 +17,7 @@ export function DeleteServiceForm({ serviceId }: { serviceId: string }) {
       <input type="hidden" name="serviceId" value={serviceId} />
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -25,7 +25,7 @@ export function DeleteServiceForm({ serviceId }: { serviceId: string }) {
       <button
         type="submit"
         disabled={isPending}
-        className="self-start text-sm text-red-700 underline disabled:opacity-60"
+        className="self-start text-sm text-danger-ink underline disabled:opacity-60"
       >
         Delete service
       </button>

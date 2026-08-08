@@ -39,7 +39,12 @@ export type ManualBookingState = { error: string | null; saved: boolean };
 
 export type MoveBookingState = { error: string | null };
 
-export async function setBookingStatus(formData: FormData): Promise<void> {
+export type StatusChangeState = { error: string | null };
+
+export async function setBookingStatus(
+  _previous: StatusChangeState,
+  formData: FormData,
+): Promise<StatusChangeState> {
   await requireSession();
 
   const parsed = statusChangeSchema.safeParse({
@@ -48,12 +53,23 @@ export async function setBookingStatus(formData: FormData): Promise<void> {
   });
 
   if (!parsed.success) {
-    return;
+    return { error: "Could not read which booking to update." };
   }
 
-  await changeBookingStatus(parsed.data.bookingId, parsed.data.status);
+  const result = await changeBookingStatus(
+    parsed.data.bookingId,
+    parsed.data.status,
+  );
+
+  if (!result.ok) {
+    return {
+      error: "Someone already updated this booking. Reload the schedule.",
+    };
+  }
 
   revalidatePath("/admin");
+
+  return { error: null };
 }
 
 export async function moveBooking(

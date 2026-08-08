@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { logOut } from "@/app/login/actions";
+import { ThemeToggle } from "@/app/theme-toggle";
 import { requireSession } from "@/lib/session";
 
 const STAFF_LINKS = [{ href: "/admin", label: "Schedule" }];
@@ -24,22 +25,25 @@ export default async function AdminLayout({
     session.role === "admin" ? [...STAFF_LINKS, ...ADMIN_LINKS] : STAFF_LINKS;
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
+    <div className="min-h-screen bg-raised">
+      <header className="border-b border-line bg-surface">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-3">
           <span className="text-sm font-semibold">Shop admin</span>
-          <form action={logOut}>
-            <button type="submit" className="text-sm text-slate-600 underline">
-              Sign out
-            </button>
-          </form>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <form action={logOut}>
+              <button type="submit" className="text-sm text-muted underline">
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
         <nav className="mx-auto flex w-full max-w-3xl gap-4 overflow-x-auto px-4 pb-3 text-sm">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="whitespace-nowrap text-slate-700 hover:underline"
+              className="whitespace-nowrap text-ink hover:underline"
             >
               {link.label}
             </Link>

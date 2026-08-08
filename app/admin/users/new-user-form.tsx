@@ -24,7 +24,7 @@ export function NewUserForm() {
           name="username"
           autoCapitalize="none"
           required
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         />
       </label>
 
@@ -33,7 +33,7 @@ export function NewUserForm() {
         <select
           name="role"
           defaultValue="staff"
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         >
           <option value="staff">Staff — bookings only</option>
           <option value="admin">Admin — bookings and settings</option>
@@ -41,13 +41,13 @@ export function NewUserForm() {
       </label>
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
 
       {state.generatedPassword ? (
-        <div className="rounded-lg bg-green-50 px-3 py-3 text-sm text-green-900">
+        <div className="rounded-lg bg-success-bg px-3 py-3 text-sm text-success-ink">
           <p className="font-medium">
             Password for {state.createdUsername}, shown once:
           </p>
@@ -61,7 +61,7 @@ export function NewUserForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-slate-900 px-4 py-3 text-base font-medium text-white disabled:opacity-60"
+        className="rounded-lg bg-accent px-4 py-3 text-base font-medium text-accent-ink disabled:opacity-60"
       >
         Create user
       </button>

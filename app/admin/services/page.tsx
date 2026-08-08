@@ -20,19 +20,19 @@ export default async function ServicesPage() {
     <div className="flex flex-col gap-8">
       <section className="flex flex-col gap-3">
         <h1 className="text-xl font-semibold">Services</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           Duration sets how long the booking blocks the shop.
         </p>
       </section>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-line bg-surface p-4">
         <h2 className="mb-3 text-base font-medium">Add a service</h2>
         <ServiceForm />
       </section>
 
       <section className="flex flex-col gap-4">
         {allServices.length === 0 ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-muted">
             No services yet. Customers cannot book until at least one exists.
           </p>
         ) : null}
@@ -40,11 +40,11 @@ export default async function ServicesPage() {
         {allServices.map((service) => (
           <article
             key={service.id}
-            className="rounded-xl border border-slate-200 bg-white p-4"
+            className="rounded-xl border border-line bg-surface p-4"
           >
             <header className="mb-3 flex items-baseline justify-between gap-2">
               <h2 className="text-base font-medium">{service.name}</h2>
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-muted">
                 {formatDuration(service.durationHours)} ·{" "}
                 {formatPrice(service.price)}
               </span>

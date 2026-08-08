@@ -37,7 +37,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
           name="name"
           defaultValue={service?.name}
           required
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         />
       </label>
 
@@ -52,7 +52,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
             step={1}
             defaultValue={service?.durationHours ?? 1}
             required
-            className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+            className="rounded-lg border border-line-strong px-3 py-3 text-base"
           />
         </label>
 
@@ -65,13 +65,13 @@ export function ServiceForm({ service }: ServiceFormProps) {
             step="0.01"
             defaultValue={service?.price ?? ""}
             required
-            className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+            className="rounded-lg border border-line-strong px-3 py-3 text-base"
           />
         </label>
       </div>
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -79,7 +79,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-slate-900 px-4 py-3 text-base font-medium text-white disabled:opacity-60"
+        className="rounded-lg bg-accent px-4 py-3 text-base font-medium text-accent-ink disabled:opacity-60"
       >
         {service ? "Save changes" : "Add service"}
       </button>

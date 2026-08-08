@@ -18,7 +18,7 @@ export function LoginForm() {
           autoComplete="username"
           autoCapitalize="none"
           required
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         />
       </label>
 
@@ -29,12 +29,12 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           required
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         />
       </label>
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -42,7 +42,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-slate-900 px-4 py-3 text-base font-medium text-white disabled:opacity-60"
+        className="rounded-lg bg-accent px-4 py-3 text-base font-medium text-accent-ink disabled:opacity-60"
       >
         {isPending ? "Signing in..." : "Sign in"}
       </button>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { toShopInstant } from "@/lib/availability";
 import { listBookingsForDay, type DayBooking } from "@/lib/booking";
 import {
   formatDuration,
@@ -10,7 +11,7 @@ import {
 } from "@/lib/format";
 import { requireSession } from "@/lib/session";
 
-import { setBookingStatus } from "./actions";
+import { StatusActionForm } from "./status-action-form";
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "Pending",
@@ -22,12 +23,12 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_CLASSES: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-900",
-  approved: "bg-green-100 text-green-900",
-  rejected: "bg-slate-200 text-slate-700",
-  cancelled: "bg-slate-200 text-slate-700",
-  completed: "bg-blue-100 text-blue-900",
-  no_show: "bg-red-100 text-red-900",
+  pending: "bg-warn-bg text-warn-ink",
+  approved: "bg-success-bg text-success-ink",
+  rejected: "bg-neutral-bg text-neutral-ink",
+  cancelled: "bg-neutral-bg text-neutral-ink",
+  completed: "bg-info-bg text-info-ink",
+  no_show: "bg-danger-bg text-danger-ink",
 };
 
 const NEXT_ACTIONS: Record<string, { status: string; label: string }[]> = {
@@ -46,7 +47,7 @@ function BookingCard({ booking }: { booking: DayBooking }) {
   const actions = NEXT_ACTIONS[booking.status] ?? [];
 
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-4">
+    <article className="rounded-xl border border-line bg-surface p-4">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="text-base font-medium">
           {formatShopTime(booking.startsAt)} – {formatShopTime(booking.endsAt)}
@@ -59,14 +60,14 @@ function BookingCard({ booking }: { booking: DayBooking }) {
       </header>
 
       <p className="mt-2 text-base">{booking.customerName}</p>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-muted">
         <a href={`tel:${booking.customerPhone}`} className="underline">
           {booking.customerPhone}
         </a>
       </p>
-      <p className="text-sm text-slate-600">{booking.customerAddress}</p>
+      <p className="text-sm text-muted">{booking.customerAddress}</p>
 
-      <ul className="mt-2 text-sm text-slate-700">
+      <ul className="mt-2 text-sm text-ink">
         {booking.services.map((service) => (
           <li key={service.id}>
             {service.name} · {formatDuration(service.durationHours)} ·{" "}
@@ -76,7 +77,7 @@ function BookingCard({ booking }: { booking: DayBooking }) {
       </ul>
 
       {booking.notes ? (
-        <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">
+        <p className="mt-2 rounded-lg bg-raised px-3 py-2 text-sm text-ink">
           {booking.notes}
         </p>
       ) : null}
@@ -84,16 +85,12 @@ function BookingCard({ booking }: { booking: DayBooking }) {
       {actions.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {actions.map((action) => (
-            <form key={action.status} action={setBookingStatus}>
-              <input type="hidden" name="bookingId" value={booking.id} />
-              <input type="hidden" name="status" value={action.status} />
-              <button
-                type="submit"
-                className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-              >
-                {action.label}
-              </button>
-            </form>
+            <StatusActionForm
+              key={action.status}
+              bookingId={booking.id}
+              status={action.status}
+              label={action.label}
+            />
           ))}
         </div>
       ) : null}
@@ -115,30 +112,32 @@ export default async function SchedulePage({
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-3">
-        <h1 className="text-xl font-semibold">{formatShopDate(new Date(`${day}T12:00:00Z`))}</h1>
+        <h1 className="text-xl font-semibold">
+          {formatShopDate(toShopInstant(day, 12))}
+        </h1>
 
         <form className="flex gap-2">
           <input
             type="date"
             name="day"
             defaultValue={day}
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-3 text-base"
+            className="flex-1 rounded-lg border border-line-strong px-3 py-3 text-base"
           />
           <button
             type="submit"
-            className="rounded-lg bg-slate-900 px-4 py-3 text-sm font-medium text-white"
+            className="rounded-lg bg-accent px-4 py-3 text-sm font-medium text-accent-ink"
           >
             Go
           </button>
         </form>
 
-        <Link href="/admin/new" className="text-sm text-slate-700 underline">
+        <Link href="/admin/new" className="text-sm text-ink underline">
           Add a walk-in or phone booking
         </Link>
       </header>
 
       {dayBookings.length === 0 ? (
-        <p className="text-sm text-slate-600">Nothing booked for this day.</p>
+        <p className="text-sm text-muted">Nothing booked for this day.</p>
       ) : (
         <section className="flex flex-col gap-3">
           {dayBookings.map((booking) => (

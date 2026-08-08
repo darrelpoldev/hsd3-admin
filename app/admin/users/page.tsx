@@ -19,12 +19,12 @@ export default async function UsersPage() {
     <div className="flex flex-col gap-8">
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">Users</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           Passwords are generated once and never shown again.
         </p>
       </header>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-4">
+      <section className="rounded-xl border border-line bg-surface p-4">
         <h2 className="mb-3 text-base font-medium">Add a user</h2>
         <NewUserForm />
       </section>
@@ -33,15 +33,15 @@ export default async function UsersPage() {
         {allUsers.map((user) => (
           <article
             key={user.id}
-            className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4"
+            className="flex items-center justify-between gap-3 rounded-xl border border-line bg-surface p-4"
           >
             <div>
               <p className="text-base">{user.username}</p>
-              <p className="text-sm text-slate-600">{user.role}</p>
+              <p className="text-sm text-muted">{user.role}</p>
             </div>
 
             {user.id === session.userId ? (
-              <span className="text-sm text-slate-500">You</span>
+              <span className="text-sm text-muted">You</span>
             ) : (
               <DeleteUserForm userId={user.id} />
             )}

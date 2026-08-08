@@ -17,7 +17,7 @@ export function DeleteUserForm({ userId }: { userId: string }) {
       <input type="hidden" name="userId" value={userId} />
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -25,7 +25,7 @@ export function DeleteUserForm({ userId }: { userId: string }) {
       <button
         type="submit"
         disabled={isPending}
-        className="text-sm text-red-700 underline disabled:opacity-60"
+        className="text-sm text-danger-ink underline disabled:opacity-60"
       >
         Remove
       </button>

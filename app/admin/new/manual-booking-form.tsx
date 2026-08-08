@@ -27,7 +27,7 @@ type Service = {
 };
 
 const fieldClassName =
-  "rounded-lg border border-slate-300 px-3 py-3 text-base w-full";
+  "rounded-lg border border-line-strong px-3 py-3 text-base w-full";
 
 export function ManualBookingForm({ services }: { services: Service[] }) {
   const [state, formAction, isSubmitting] = useActionState(
@@ -67,7 +67,7 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
 
   if (state.saved) {
     return (
-      <p className="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-900">
+      <p className="rounded-xl border border-success-line bg-success-bg p-4 text-sm text-success-ink">
         Booking added as pending. Approve it from the schedule.
       </p>
     );
@@ -81,7 +81,7 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
         {services.map((service) => (
           <label
             key={service.id}
-            className="flex items-center gap-3 rounded-lg border border-slate-200 px-3 py-3"
+            className="flex items-center gap-3 rounded-lg border border-line px-3 py-3"
           >
             <input
               type="checkbox"
@@ -98,7 +98,7 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
               className="size-5"
             />
             <span className="flex-1 text-base">{service.name}</span>
-            <span className="text-sm text-slate-600">
+            <span className="text-sm text-muted">
               {service.durationHours}h
             </span>
           </label>
@@ -114,7 +114,7 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
         className={fieldClassName}
       />
 
-      {isLoadingSlots ? <p className="text-sm text-slate-600">Checking…</p> : null}
+      {isLoadingSlots ? <p className="text-sm text-muted">Checking…</p> : null}
 
       <div className="grid grid-cols-3 gap-2">
         {slots.map((slot) => (
@@ -122,8 +122,8 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
             key={slot}
             className={`cursor-pointer rounded-lg border px-2 py-3 text-center text-sm ${
               activeSlot === slot
-                ? "border-slate-900 bg-slate-900 text-white"
-                : "border-slate-300"
+                ? "border-accent bg-accent text-accent-ink"
+                : "border-line-strong"
             }`}
           >
             <input
@@ -152,7 +152,7 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
       <textarea name="notes" placeholder="Notes (optional)" rows={3} className={fieldClassName} />
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -160,7 +160,7 @@ export function ManualBookingForm({ services }: { services: Service[] }) {
       <button
         type="submit"
         disabled={isSubmitting || !activeSlot}
-        className="rounded-lg bg-slate-900 px-4 py-4 text-base font-medium text-white disabled:opacity-50"
+        className="rounded-lg bg-accent px-4 py-4 text-base font-medium text-accent-ink disabled:opacity-50"
       >
         Add booking
       </button>

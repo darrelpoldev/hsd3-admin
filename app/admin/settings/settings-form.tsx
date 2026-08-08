@@ -24,7 +24,7 @@ export function SettingsForm({
     <form action={formAction} className="flex flex-col gap-4">
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold">Booking settings</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-muted">
           These decide which slots the public form is allowed to offer.
         </p>
       </header>
@@ -38,7 +38,7 @@ export function SettingsForm({
           max={365}
           defaultValue={horizonDays}
           required
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         />
       </label>
 
@@ -51,12 +51,12 @@ export function SettingsForm({
           max={720}
           defaultValue={minNoticeHours}
           required
-          className="rounded-lg border border-slate-300 px-3 py-3 text-base"
+          className="rounded-lg border border-line-strong px-3 py-3 text-base"
         />
       </label>
 
       {state.error ? (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p className="rounded-lg bg-danger-bg px-3 py-2 text-sm text-danger-ink">
           {state.error}
         </p>
       ) : null}
@@ -64,7 +64,7 @@ export function SettingsForm({
       <button
         type="submit"
         disabled={isPending}
-        className="rounded-lg bg-slate-900 px-4 py-3 text-base font-medium text-white disabled:opacity-60"
+        className="rounded-lg bg-accent px-4 py-3 text-base font-medium text-accent-ink disabled:opacity-60"
       >
         Save settings
       </button>
