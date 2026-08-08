@@ -11,7 +11,7 @@ const WEEKDAY_HOURS = [
   { weekday: 6, opensAt: "09:00", closesAt: "15:00", isClosed: false },
 ];
 
-const DEFAULT_HORIZON_DAYS = 30;
+const DEFAULT_HORIZON_DAYS = 90;
 const DEFAULT_MIN_NOTICE_HOURS = 24;
 
 function requireEnv(name: string): string {
