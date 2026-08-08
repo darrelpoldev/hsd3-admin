@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { Wordmark } from "@/app/brand";
 import { logOut } from "@/app/login/actions";
 import { ThemeToggle } from "@/app/theme-toggle";
 import { requireSession } from "@/lib/session";
@@ -28,7 +29,7 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-raised">
       <header className="border-b border-line bg-surface">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-3">
-          <span className="text-sm font-semibold">Shop admin</span>
+          <Wordmark compact />
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <form action={logOut}>
